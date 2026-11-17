@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}NGO Care Dashboard{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+{% if session.get('user_id') %}
+<nav class="navbar navbar-expand-lg navbar-dark topbar">
+  <div class="container-fluid"><a class="navbar-brand fw-bold" href="{{ url_for('dashboard') }}">CareConnect <span class="brand-dot">●</span></a>
+  <div class="d-flex align-items-center gap-3 text-white"><span class="small">{{ session.get('username') }} · {{ session.get('role')|title }}</span>
+  <form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-light">Logout</button></form></div></div>
+</nav>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="side-label">WORKSPACE</div>
+    <a href="{{ url_for('dashboard') }}">▦ &nbsp; Dashboard</a>
+    <a href="{{ url_for('children') }}">♧ &nbsp; Child Profiles</a>
+    <a href="{{ url_for('attendance') }}">✓ &nbsp; Attendance</a>
+    <a href="{{ url_for('activities') }}">✳ &nbsp; Activities</a>
+    <a href="{{ url_for('sessions') }}">♡ &nbsp; Support Sessions</a>
+    <a href="{{ url_for('reports') }}">▤ &nbsp; Reports</a>
+    {% if session.get('role') == 'admin' %}<div class="side-label mt-4">ADMINISTRATION</div><a href="{{ url_for('users') }}">⚙ &nbsp; Staff Accounts</a>{% endif %}
+    <div class="sidebar-note">Supporting participation,<br>one day at a time.</div>
+  </aside>
+  <main class="main-content">
+    {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category,message in messages %}<div class="alert alert-{{ category }} alert-dismissible fade show">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}{% endwith %}
+    {% block content %}{% endblock %}
+    <footer>CareConnect · NGO Child Activity & Support Management · Academic prototype</footer>
+  </main>
+</div>
+{% else %}
+<main>{% with messages = get_flashed_messages(with_categories=true) %}{% for category,message in messages %}<div class="alert alert-{{ category }} m-3">{{ message }}</div>{% endfor %}{% endwith %}{% block auth_content %}{% endblock %}</main>
+{% endif %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body></html>

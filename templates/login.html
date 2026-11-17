@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block title %}Login · CareConnect{% endblock %}
+{% block auth_content %}
+<div class="login-wrap"><div class="login-card">
+  <div class="login-mark">♡</div><h2>Welcome to CareConnect</h2><p class="text-muted">NGO Child Activity & Support Management</p>
+  <form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label class="form-label">Username</label><input class="form-control mb-3" name="username" required autofocus>
+    <label class="form-label">Password</label><input class="form-control mb-4" type="password" name="password" required>
+    <button class="btn btn-primary w-100 py-2">Sign in</button>
+  </form><div class="demo-hint">Demo admin: <b>admin</b> / <b>Admin@12345</b></div>
+</div></div>{% endblock %}

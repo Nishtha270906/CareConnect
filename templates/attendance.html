@@ -1,0 +1,245 @@
+
+{% extends "base.html" %}
+{% block title %}Attendance · CareConnect{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">DAILY OPERATIONS</div>
+        <h1>Attendance</h1>
+        <p>Mark attendance for all children in one place.</p>
+    </div>
+</div>
+
+<!-- Attendance Register -->
+<div class="panel-card mb-4">
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+        <h5 class="mb-0">Daily Attendance Register</h5>
+
+        <!-- Select Date -->
+        <form method="GET" action="{{ url_for('attendance') }}"
+              class="d-flex gap-2 align-items-center">
+
+            <label class="form-label mb-0">Date:</label>
+
+            <input
+                type="date"
+                name="date"
+                value="{{ selected_date }}"
+                class="form-control"
+                required
+            >
+
+            <button type="submit" class="btn btn-outline-primary">
+                View
+            </button>
+        </form>
+    </div>
+
+    <!-- Bulk Attendance Form -->
+    <form method="POST" action="{{ url_for('attendance') }}">
+
+        <input
+            type="hidden"
+            name="csrf_token"
+            value="{{ csrf_token() }}"
+        >
+
+        <input
+            type="hidden"
+            name="attendance_date"
+            value="{{ selected_date }}"
+        >
+
+        <!-- Bulk Actions -->
+        <div class="d-flex flex-wrap gap-2 mb-3">
+
+            <button
+                type="button"
+                class="btn btn-outline-success btn-sm"
+                onclick="markAll('Present')">
+                Mark All Present
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-outline-danger btn-sm"
+                onclick="markAll('Absent')">
+                Mark All Absent
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-outline-warning btn-sm"
+                onclick="markAll('Leave')">
+                Mark All Leave
+            </button>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Child ID</th>
+                        <th>Child Name</th>
+                        <th>Attendance Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for k in kids %}
+
+                    <tr>
+
+                        <td>{{ loop.index }}</td>
+
+                        <td>{{ k.child_code }}</td>
+
+                        <td>{{ k.full_name }}</td>
+
+                        <td>
+
+                            <select
+                                name="status_{{ k.id }}"
+                                class="form-select attendance-status"
+                                required
+                            >
+
+                                <option value="Present"
+                                    {% if attendance_map.get(k.id, 'Present') == 'Present' %}
+                                        selected
+                                    {% endif %}>
+                                    Present
+                                </option>
+
+                                <option value="Absent"
+                                    {% if attendance_map.get(k.id, 'Present') == 'Absent' %}
+                                        selected
+                                    {% endif %}>
+                                    Absent
+                                </option>
+
+                                <option value="Leave"
+                                    {% if attendance_map.get(k.id, 'Present') == 'Leave' %}
+                                        selected
+                                    {% endif %}>
+                                    Leave
+                                </option>
+
+                            </select>
+
+                        </td>
+
+                    </tr>
+
+                    {% else %}
+
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">
+                            No active children found. Please add children first.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% if kids %}
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3">
+
+            <span class="text-muted">
+                Total Children: {{ kids|length }}
+            </span>
+
+            <button type="submit" class="btn btn-primary">
+                Save Attendance
+            </button>
+
+        </div>
+
+        {% endif %}
+
+    </form>
+
+</div>
+
+
+<!-- Recent Attendance -->
+<div class="panel-card">
+
+    <h5 class="mb-3">Recent Attendance Records</h5>
+
+    <div class="table-responsive">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Child</th>
+                    <th>Child ID</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for r in records %}
+
+                <tr>
+
+                    <td>{{ r.attendance_date }}</td>
+
+                    <td>{{ r.full_name }}</td>
+
+                    <td>{{ r.child_code }}</td>
+
+                    <td>
+                        <span class="status-tag">
+                            {{ r.status }}
+                        </span>
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="4" class="text-center text-muted">
+                        No attendance records yet.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- Bulk Attendance JavaScript -->
+<script>
+    function markAll(status) {
+        document.querySelectorAll(".attendance-status").forEach(function(select) {
+            select.value = status;
+        });
+    }
+</script>
+
+{% endblock %}

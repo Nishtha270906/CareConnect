@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block title %}Staff Accounts · CareConnect{% endblock %}{% block content %}
+<div class="page-heading"><div><div class="eyebrow">ADMINISTRATION</div><h1>Staff accounts</h1><p>Create accounts for authorized NGO team members.</p></div></div>
+<div class="row g-3"><div class="col-lg-4"><div class="panel-card"><h5 class="mb-3">Create account</h5><form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<label class="form-label">Username</label><input name="username" class="form-control mb-2" required>
+<label class="form-label">Temporary password (10+ characters)</label><input type="password" name="password" minlength="10" class="form-control mb-2" required>
+<label class="form-label">Role</label><select name="role" class="form-select mb-3"><option value="staff">Staff</option><option value="admin">Admin</option></select>
+<button class="btn btn-primary w-100">Create account</button></form></div></div>
+<div class="col-lg-8"><div class="panel-card"><h5 class="mb-3">Registered accounts</h5><table class="table"><thead><tr><th>Username</th><th>Role</th><th>Created</th></tr></thead><tbody>{% for u in users %}<tr><td>{{ u.username }}</td><td>{{ u.role|title }}</td><td>{{ u.created_at }}</td></tr>{% endfor %}</tbody></table></div></div></div>{% endblock %}

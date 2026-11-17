@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block title %}{{ code }} · CareConnect{% endblock %}{% block content %}<div class="panel-card text-center py-5"><div class="display-4 fw-bold">{{ code }}</div><h3>{{ message }}</h3><a href="{{ url_for('dashboard') }}" class="btn btn-primary mt-3">Back to dashboard</a></div>{% endblock %}

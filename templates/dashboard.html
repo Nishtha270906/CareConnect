@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% block title %}Dashboard · CareConnect{% endblock %}{% block content %}
+<div class="page-heading"><div><div class="eyebrow">OVERVIEW</div><h1>Good day, {{ session.get('username') }} <span>✦</span></h1><p>Here is what's happening across your centre.</p></div><div class="date-chip">▣ &nbsp; {{ today }}</div></div>
+<div class="row g-3 mb-4">
+{% for label,value,icon,sub in [('Active children',metrics.children,'♧','Registered profiles'),("Present today",metrics.present,'✓','Marked present'),('Activities',metrics.activities,'✳','Activities created'),('Support sessions',metrics.sessions,'♡','Sessions recorded')] %}
+<div class="col-6 col-xl-3"><div class="metric-card"><div class="metric-top"><span>{{ label }}</span><span class="metric-icon">{{ icon }}</span></div><div class="metric-number">{{ value }}</div><div class="metric-sub">{{ sub }}</div></div></div>
+{% endfor %}
+</div>
+<div class="row g-3"><div class="col-lg-8"><div class="panel-card"><div class="panel-heading"><div><h5>Attendance overview</h5><p>Present and absent records by day</p></div><span class="pill">Recent 7 days</span></div><canvas id="attendanceChart" height="115"></canvas></div></div>
+<div class="col-lg-4"><div class="panel-card h-100"><div class="panel-heading"><div><h5>Quick actions</h5><p>Jump into daily operations</p></div></div>
+<a class="quick-link" href="{{ url_for('children') }}"><span>♧</span><div><b>Manage children</b><small>View and add profiles</small></div> →</a>
+<a class="quick-link" href="{{ url_for('attendance') }}"><span>✓</span><div><b>Mark attendance</b><small>Record today's attendance</small></div> →</a>
+<a class="quick-link" href="{{ url_for('activities') }}"><span>✳</span><div><b>Add activity</b><small>Track daily engagement</small></div> →</a>
+<a class="quick-link" href="{{ url_for('sessions') }}"><span>♡</span><div><b>Log support session</b><small>Record support provided</small></div> →</a>
+</div></div></div>
+<script>
+new Chart(document.getElementById('attendanceChart'),{type:'line',data:{labels:{{ chart_labels|tojson }},datasets:[{label:'Present',data:{{ chart_present|tojson }},borderColor:'#249b82',backgroundColor:'rgba(36,155,130,.12)',fill:true,tension:.35},{label:'Absent',data:{{ chart_absent|tojson }},borderColor:'#e39b58',backgroundColor:'rgba(227,155,88,.08)',fill:true,tension:.35}]},options:{responsive:true,plugins:{legend:{position:'bottom'}},scales:{y:{beginAtZero:true,ticks:{precision:0}}}}});
+</script>{% endblock %}

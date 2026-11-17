@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block title %}Child Profiles · CareConnect{% endblock %}{% block content %}
+<div class="page-heading"><div><div class="eyebrow">RECORDS</div><h1>Child profiles</h1><p>Maintain basic child and guardian information.</p></div></div>
+<div class="row g-3"><div class="col-xl-4"><div class="panel-card"><h5 class="mb-3">Add a child</h5><form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<label class="form-label">Child ID *</label><input name="child_code" class="form-control mb-2" placeholder="e.g. CC-001" required>
+<label class="form-label">Full name *</label><input name="full_name" class="form-control mb-2" required>
+<label class="form-label">Age</label><input name="age" type="number" min="1" max="18" class="form-control mb-2">
+<label class="form-label">Guardian name</label><input name="guardian_name" class="form-control mb-2">
+<label class="form-label">Guardian contact</label><input name="guardian_contact" class="form-control mb-2">
+<label class="form-label">Enrollment date</label><input name="enrollment_date" type="date" class="form-control mb-2">
+<label class="form-label">Status</label><select name="status" class="form-select mb-2"><option>Active</option><option>Inactive</option></select>
+<label class="form-label">General notes</label><textarea name="notes" class="form-control mb-3" rows="2"></textarea>
+<button class="btn btn-primary w-100">Save child profile</button></form></div></div>
+<div class="col-xl-8"><div class="panel-card"><div class="d-flex justify-content-between align-items-center gap-2 mb-3"><h5 class="mb-0">Registered children</h5><form class="d-flex" method="get"><input class="form-control form-control-sm" name="q" value="{{ q }}" placeholder="Search name or ID"><button class="btn btn-sm btn-outline-primary ms-2">Search</button></form></div>
+<div class="table-responsive"><table class="table align-middle"><thead><tr><th>Child ID</th><th>Name</th><th>Age</th><th>Guardian</th><th>Status</th>{% if session.get('role')=='admin' %}<th></th>{% endif %}</tr></thead><tbody>
+{% for c in children %}<tr><td><span class="code-tag">{{ c.child_code }}</span></td><td class="fw-semibold">{{ c.full_name }}</td><td>{{ c.age or '—' }}</td><td>{{ c.guardian_name or '—' }}</td><td><span class="status-tag">{{ c.status }}</span></td>{% if session.get('role')=='admin' %}<td><form method="post" action="{{ url_for('delete_child',child_id=c.id) }}" onsubmit="return confirm('Delete this child and linked records?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-danger">Delete</button></form></td>{% endif %}</tr>{% else %}<tr><td colspan="6" class="text-center text-muted py-4">No child profiles found. Add the first profile.</td></tr>{% endfor %}
+</tbody></table></div></div></div></div>{% endblock %}
