@@ -80,4 +80,4 @@ The project uses SQLite to store children's information, attendance, activities,
 CareConnect aims to simplify NGO management by digitizing child records, attendance, activities, and support information through a user-friendly web application.
 
 ## 10. DEPLOYED LINK OF WEBSITE
-nishtha2709.pythonanywhere.com
+https://nishtha2709.pythonanywhere.com/
